@@ -1,0 +1,19 @@
+config-version: 2
+max-warns: 5
+message-prefix: '&8&l[&ePunishSystem&8&l] &r'
+tempban-message: '&7&l[ &c&lSystem &7&l]: &5%source% &7Temp Banned &3%target% &7for: &c%reason%&6.'
+ban-message: '&7&l[ &c&lSystem &7&l]: &5%source% &7Banned &3%target% &7for: &c%reason%&6.'
+warn-message: '&7&l[ &c&lSystem &7&l]: &5%source% &7Warned &3%target% &7for: &c%reason%&6.'
+autounban-message: '&7&l[ &c&lSystem &7&l]: &5%target% &7was automatically unbanned.'
+requests:
+ warninput-message: '&eType the reason you want to warn %target% in chat now. To cancel, type &6@cancel'
+ baninput-message: '&eType the reason you want to ban %target% in chat now. To cancel, type &6@cancel'
+ canceled-message: '&bProcess Canceled!'
+source-responses:
+ warned-player: '&aWarned %target% for %reason%'
+ temp-banned-player: '&aTemp Banned %target% for %reason%'
+ banned-player: '&aBanned %target% for %reason%'
+target-responses:
+ warned-player: '&4&lWARNING!!!%n%&f%reason%'
+ temp-banned-player: '&4&lYOU WERE BANNED!!!%n%&fYou were banned from the server for the followng reason(s)%n%&6%reason%%n%&aDont worry this ban is temporary and will expire on &a%expiration%'
+ banned-player: '&4&lYOU WERE BANNED!!!%n%&fYou were banned from the server for the followng reason(s)%n%&6%reason%%n%&cTHIS BAN IS PERMANENT'

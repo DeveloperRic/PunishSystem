@@ -1,0 +1,14 @@
+main: com.rictacius.punishSystem.Main
+version: 3.2
+name: PunishSystem
+depend: [Vault]
+
+commands:
+  punish:
+    description: Main command
+  warn:
+    description: Warn command
+  ban:
+    description: Ban command
+  psmodify:
+    description: Modify command
