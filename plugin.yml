@@ -1,5 +1,5 @@
 main: com.rictacius.punishSystem.Main
-version: 3.2
+version: 1.4.0
 name: PunishSystem
 depend: [Vault]
 
@@ -12,3 +12,8 @@ commands:
     description: Ban command
   psmodify:
     description: Modify command
+  ipban:
+    description: IPBan command
+    aliases: [banip]
+  pardon:
+    description: Pardon a player
