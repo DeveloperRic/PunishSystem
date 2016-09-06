@@ -71,6 +71,23 @@ public class HistoryMenu implements Listener {
 					tempLore.add(ChatColor.LIGHT_PURPLE + "Duration: " + ChatColor.RED + "FOREVER");
 				}
 				tempMeta.setLore(tempLore);
+			} else if (info[0].startsWith("ipban")) {
+				tempItem.setDurability((short) 1);
+				tempMeta.setDisplayName(ChatColor.DARK_RED + "IP BAN by " + ChatColor.GOLD
+						+ Bukkit.getOfflinePlayer(UUID.fromString(info[1])).getName());
+				String date = info[2];
+				tempLore.add(ChatColor.LIGHT_PURPLE + "Banned on " + date);
+				tempLore.add(
+						ChatColor.LIGHT_PURPLE + "Reason: " + ChatColor.translateAlternateColorCodes('&', info[3]));
+				int time = Integer.parseInt(info[4]);
+				if (time >= 0) {
+					SimpleDateFormat formatter = new SimpleDateFormat("EEEE, MMMM d, yyyy HH:mm");
+					String dateString = formatter.format(new Date(time * 1000L));
+					tempLore.add(ChatColor.LIGHT_PURPLE + "Duration: " + dateString);
+				} else {
+					tempLore.add(ChatColor.LIGHT_PURPLE + "Duration: " + ChatColor.RED + "FOREVER");
+				}
+				tempMeta.setLore(tempLore);
 			}
 			tempItem.setItemMeta(tempMeta);
 			inv.addItem(tempItem);

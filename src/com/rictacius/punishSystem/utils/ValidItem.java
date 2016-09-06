@@ -59,7 +59,7 @@ public class ValidItem {
 		}
 		return false;
 	}
-	
+
 	public static boolean invNameStatsWith(Inventory inv, String name) {
 		if (inv == null) {
 			return false;
@@ -68,5 +68,12 @@ public class ValidItem {
 			return true;
 		}
 		return false;
+	}
+
+	public static String getName(ItemStack item) {
+		if (hasCustomName(item)) {
+			return item.getItemMeta().getDisplayName();
+		}
+		return "";
 	}
 }

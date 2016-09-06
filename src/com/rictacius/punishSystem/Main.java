@@ -19,9 +19,13 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.rictacius.punishSystem.commands.BanCommand;
+import com.rictacius.punishSystem.commands.IPBanCommand;
 import com.rictacius.punishSystem.commands.ModifyCommand;
+import com.rictacius.punishSystem.commands.PardonCommand;
 import com.rictacius.punishSystem.commands.PunishCommand;
 import com.rictacius.punishSystem.commands.WarnCommand;
+import com.rictacius.punishSystem.listener.PlayerUUIDResolver;
+import com.rictacius.punishSystem.menus.GUIBanIPInput;
 import com.rictacius.punishSystem.menus.GUIBanInput;
 import com.rictacius.punishSystem.menus.GUIWarnInput;
 import com.rictacius.punishSystem.menus.HistoryMenu;
@@ -95,7 +99,9 @@ public class Main extends JavaPlugin implements Listener {
 			getCommand("punish").setExecutor(new PunishCommand());
 			getCommand("warn").setExecutor(new WarnCommand());
 			getCommand("ban").setExecutor(new BanCommand());
+			getCommand("ipban").setExecutor(new IPBanCommand());
 			getCommand("psmodify").setExecutor(new ModifyCommand());
+			getCommand("pardon").setExecutor(new PardonCommand());
 		} catch (Exception e) {
 			Methods.sendColoredMessage(this, ChatColor.AQUA, ("Error while registering commands!"), ChatColor.RED);
 			Methods.sendColoredMessage(this, ChatColor.AQUA, ("Trace:"), ChatColor.RED);
@@ -110,8 +116,10 @@ public class Main extends JavaPlugin implements Listener {
 			pm.registerEvents(new MainMenu(), this);
 			pm.registerEvents(new GUIWarnInput(), this);
 			pm.registerEvents(new GUIBanInput(), this);
+			pm.registerEvents(new GUIBanIPInput(), this);
 			pm.registerEvents(new HistoryMenu(), this);
 			pm.registerEvents(new ServerChecker(), this);
+			pm.registerEvents(new PlayerUUIDResolver(), this);
 		} catch (Exception e) {
 			Methods.sendColoredMessage(this, ChatColor.AQUA, ("Error while registering events!"), ChatColor.RED);
 			Methods.sendColoredMessage(this, ChatColor.AQUA, ("Trace:"), ChatColor.RED);
@@ -133,8 +141,8 @@ public class Main extends JavaPlugin implements Listener {
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	private File configf, defaultf, tempbansf;
-	private FileConfiguration config, defaultc, tempbansc;
+	private File configf, defaultf, tempbansf, playersf;
+	private FileConfiguration config, defaultc, tempbansc, players;
 
 	public FileConfiguration getDefaultDataConfig() {
 		return this.defaultc;
@@ -142,6 +150,10 @@ public class Main extends JavaPlugin implements Listener {
 
 	public FileConfiguration getTempbansConfig() {
 		return this.tempbansc;
+	}
+	
+	public FileConfiguration getPlayersConfig() {
+		return this.players;
 	}
 
 	public int reloadAllConfigFiles() {
@@ -175,6 +187,15 @@ public class Main extends JavaPlugin implements Listener {
 			trace = e.getStackTrace();
 			traces.add(trace);
 			file = "Tempban Config File";
+			errorFiles.add(file);
+		}
+		try {
+			players = YamlConfiguration.loadConfiguration(playersf);
+		} catch (Exception e) {
+			errors++;
+			trace = e.getStackTrace();
+			traces.add(trace);
+			file = "Players Config File";
 			errorFiles.add(file);
 		}
 		if (errors > 0) {
@@ -253,12 +274,23 @@ public class Main extends JavaPlugin implements Listener {
 			ex.printStackTrace();
 		}
 	}
+	
+	public void savePlayersFile() {
+		try {
+			getPlayersConfig().save(playersf);
+		} catch (Exception ex) {
+			Methods.sendColoredMessage(this, ChatColor.GOLD, ("Could not save config to " + playersf), ChatColor.RED);
+			Methods.sendColoredMessage(this, ChatColor.GOLD, ("Trace:"), ChatColor.RED);
+			ex.printStackTrace();
+		}
+	}
 
 	private void createFiles() {
 		try {
 			configf = new File(getDataFolder(), "config.yml");
 			defaultf = new File(getDataFolder(), "default_data.yml");
 			tempbansf = new File(getDataFolder(), "tempbans.yml");
+			playersf = new File(getDataFolder(), "players.yml");
 
 			if (!configf.exists()) {
 				configf.getParentFile().mkdirs();
@@ -272,14 +304,20 @@ public class Main extends JavaPlugin implements Listener {
 				tempbansf.getParentFile().mkdirs();
 				saveResource("tempbans.yml", false);
 			}
+			if (!playersf.exists()) {
+				playersf.getParentFile().mkdirs();
+				saveResource("players.yml", false);
+			}
 
 			config = new YamlConfiguration();
 			defaultc = new YamlConfiguration();
 			tempbansc = new YamlConfiguration();
+			players = new YamlConfiguration();
 			try {
 				config.load(configf);
 				defaultc.load(defaultf);
 				tempbansc.load(tempbansf);
+				players.load(playersf);
 			} catch (Exception e) {
 				Methods.sendColoredMessage(this, ChatColor.LIGHT_PURPLE, ("Error while registering config!"),
 						ChatColor.RED);

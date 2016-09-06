@@ -17,6 +17,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import com.rictacius.punishSystem.Main;
+import com.rictacius.punishSystem.listener.PlayerUUIDResolver;
 import com.rictacius.punishSystem.utils.History;
 import com.rictacius.punishSystem.utils.PermCheck;
 import com.rictacius.punishSystem.utils.ValidItem;
@@ -76,7 +77,7 @@ public class MainMenu implements Listener {
 			nbt = new NBTItem(warnItem);
 			nbt.setString("menu", "warn£" + toPunish.getUniqueId());
 			warnItem = nbt.getItem();
-			inv.setItem(14, warnItem);
+			inv.setItem(13, warnItem);
 		}
 		if (PermCheck.hasPerm(player, "punishsystem.ban")) {
 			ItemStack banItem = new ItemStack(Material.INK_SACK);
@@ -87,7 +88,18 @@ public class MainMenu implements Listener {
 			nbt = new NBTItem(banItem);
 			nbt.setString("menu", "ban£" + toPunish.getUniqueId());
 			banItem = nbt.getItem();
-			inv.setItem(16, banItem);
+			inv.setItem(14, banItem);
+		}
+		if (PermCheck.hasPerm(player, "punishsystem.ipban")) {
+			ItemStack ipBanItem = new ItemStack(Material.INK_SACK);
+			ipBanItem.setDurability((short) 5);
+			tempMeta = ipBanItem.getItemMeta();
+			tempMeta.setDisplayName(ChatColor.GREEN + "IPBan Player");
+			ipBanItem.setItemMeta(tempMeta);
+			nbt = new NBTItem(ipBanItem);
+			nbt.setString("menu", "ipban£" + toPunish.getUniqueId());
+			ipBanItem = nbt.getItem();
+			inv.setItem(15, ipBanItem);
 		}
 		return inv;
 	}
@@ -113,6 +125,12 @@ public class MainMenu implements Listener {
 					String text = nbt.getString("menu");
 					UUID uid = UUID.fromString(text.split("£")[1]);
 					GUIBanInput.requestBanInput(p, Bukkit.getOfflinePlayer(uid));
+				} else if (nbt.getString("menu").startsWith("ipban")) {
+					String text = nbt.getString("menu");
+					UUID uid = UUID.fromString(text.split("£")[1]);
+					OfflinePlayer target = Bukkit.getOfflinePlayer(uid);
+					String address = PlayerUUIDResolver.resolveUUID(target.getUniqueId());
+					GUIBanIPInput.requestBanInput(p, target, address);
 				}
 			}
 		}

@@ -20,6 +20,8 @@ public class ConfigParser {
 	public static String appendSourceTargetParse(String path, String source, OfflinePlayer target,
 			String[] args) {
 		String raw = plugin.getConfig().getString(path);
+		if (raw == null)
+			return "";
 		raw = ChatColor.translateAlternateColorCodes('&', raw);
 		raw = raw.replaceAll("%source%", source);
 		raw = raw.replaceAll("%target%", target.getName());

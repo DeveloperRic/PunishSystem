@@ -199,4 +199,33 @@ public class History {
 			return null;
 		}
 	}
+	
+	public Date ipBanPlayer(OfflinePlayer target, String reason, String source, int time) {
+		FileConfiguration config = getData(target);
+		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		Date date = new Date();
+		String strdate = dateFormat.format(date);
+		String output = "ipban£" + source + "£" + strdate + "£" + reason + "£" + time;
+		int bans = getBanCount(target);
+		int hiscount = getHistoryCount(target);
+		try {
+			config.set("bans." + String.valueOf(bans + 1), ProtectedConfigFile.encrypt(output));
+			config.set("history." + String.valueOf(hiscount + 1), ProtectedConfigFile.encrypt(output));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		saveData(config, target);
+		if (time > 0) {
+			int warns = getWarnCount(target);
+			try {
+				config.set("warns." + String.valueOf(warns + 1), ProtectedConfigFile.encrypt(output));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			saveData(config, target);
+			return new Date(time * 1000L);
+		} else {
+			return null;
+		}
+	}
 }
